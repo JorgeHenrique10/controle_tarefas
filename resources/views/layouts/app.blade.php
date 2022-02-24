@@ -13,6 +13,13 @@
         <!-- Styles -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
+        <!-- Styles BootStrap -->
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+
+        <!-- Scripts Jquery e Bootstrap -->
+        <script src="{{ asset('js/jquery.js') }}" defer></script>
+        <script src="{{ asset('js/bootstrap.js') }}" defer></script>
+
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
     </head>

@@ -15,4 +15,7 @@ mix.js('resources/js/app.js', 'public/js').postCss('resources/css/app.css', 'pub
     require('postcss-import'),
     require('tailwindcss'),
     require('autoprefixer'),
-]);
+])
+    .scripts('node_modules/jquery/dist/jquery.min.js', 'public/js/jquery.js')
+    .scripts('node_modules/bootstrap/dist/js/bootstrap.js', 'public/js/bootstrap.js')
+    .styles('node_modules/bootstrap/dist/css/bootstrap.css', 'public/css/bootstrap.css');
