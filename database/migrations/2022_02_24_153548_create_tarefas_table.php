@@ -15,6 +15,10 @@ return new class extends Migration
     {
         Schema::create('tarefas', function (Blueprint $table) {
             $table->id();
+            $table->text('tarefa', 1000);
+            $table->date('data_limite_conclusao');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

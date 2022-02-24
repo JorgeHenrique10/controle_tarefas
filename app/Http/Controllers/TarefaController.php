@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NovaTarefaMail;
 use App\Models\Tarefa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class TarefaController extends Controller
 {
@@ -14,7 +17,9 @@ class TarefaController extends Controller
      */
     public function index()
     {
-        return view('tarefa.index');
+        $user = Auth::user();
+        $tarefas = Tarefa::where('user_id', $user->id)->paginate(2);
+        return view('tarefa.index', ['tarefas' => $tarefas]);
     }
 
     /**
@@ -24,7 +29,7 @@ class TarefaController extends Controller
      */
     public function create()
     {
-        //
+        return view('tarefa.create');
     }
 
     /**
@@ -35,7 +40,26 @@ class TarefaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $regras = [
+            'tarefa' => 'required',
+            'data_limite_conclusao' => 'required'
+        ];
+        $feedback = [
+            'required' => 'O campo :attribute é obrigatório!'
+        ];
+
+        $request->validate($regras, $feedback);
+
+        $user = Auth::user();
+
+        $dados = $request->all();
+        $dados['user_id'] = $user->id;
+
+        $tarefa = Tarefa::create($dados);
+
+        Mail::to($user->email)->send(new NovaTarefaMail($tarefa));
+
+        return redirect()->route('tarefa.index');
     }
 
     /**
@@ -46,7 +70,7 @@ class TarefaController extends Controller
      */
     public function show(Tarefa $tarefa)
     {
-        //
+        return view('tarefa.show', ['tarefa' => $tarefa]);
     }
 
     /**
@@ -57,7 +81,7 @@ class TarefaController extends Controller
      */
     public function edit(Tarefa $tarefa)
     {
-        //
+        return view('tarefa.create', ['tarefa' => $tarefa]);
     }
 
     /**
@@ -69,7 +93,24 @@ class TarefaController extends Controller
      */
     public function update(Request $request, Tarefa $tarefa)
     {
-        //
+        $regras = [
+            'tarefa' => 'required',
+            'data_limite_conclusao' => 'required'
+        ];
+        $feedback = [
+            'required' => 'O campo :attribute é obrigatório!'
+        ];
+
+        $request->validate($regras, $feedback);
+
+        $user = Auth::user();
+
+        if ($tarefa->user_id == $user->id) {
+
+            $tarefa->update($request->all());
+        }
+
+        return redirect()->route('tarefa.index');
     }
 
     /**
@@ -80,6 +121,6 @@ class TarefaController extends Controller
      */
     public function destroy(Tarefa $tarefa)
     {
-        //
+        dd($tarefa);
     }
 }
