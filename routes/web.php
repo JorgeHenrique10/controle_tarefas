@@ -1,6 +1,8 @@
 <?php
 require __DIR__ . '/auth.php';
 
+use App\Mail\MensagemTesteMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,3 +23,9 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+Route::get('/emails', function () {
+    // return new MensagemTesteMail();
+    Mail::to('jorge@mailinator.com')->send(new MensagemTesteMail());
+    return "Atualizado!";
+});
