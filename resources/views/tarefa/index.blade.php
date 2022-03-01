@@ -3,7 +3,10 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Lista de Tarefas') }}
         </h2>
-        <a href="{{route('tarefa.create')}}" class="float-right">Nova Tarefa</a>
+        <a href="{{ route('tarefa.create') }}" class="float-right">Nova Tarefa</a>
+        <a href="{{ route('tarefa.exportar', ['extensao' => 'xlsx']) }}" class="float-right">Excel</a>
+        <a href="{{ route('tarefa.exportar', ['extensao' => 'csv']) }}" class="float-right">CSV</a>
+        <a href="{{ route('tarefa.exportar', ['extensao' => 'pdf']) }}" class="float-right" target="_blank">PDF</a>
     </x-slot>
 
     <div class="py-12">
@@ -22,17 +25,20 @@
                         <tbody>
                             @foreach ($tarefas as $tarefa)
                                 <tr>
-                                    <td>{{$tarefa->id}}</td>
-                                    <td>{{$tarefa->tarefa}}</td>
-                                    <td>{{date('d/m/Y', strtotime($tarefa->data_limite_conclusao))}}</td>
+                                    <td>{{ $tarefa->id }}</td>
+                                    <td>{{ $tarefa->tarefa }}</td>
+                                    <td>{{ date('d/m/Y', strtotime($tarefa->data_limite_conclusao)) }}</td>
                                     <td class="d-inline-flex">
-                                        <a href="{{route('tarefa.show', ['tarefa' => $tarefa->id])}}">Visualizar</a> |
-                                        <a href="{{route('tarefa.edit', ['tarefa' => $tarefa->id])}}">Editar</a> |
-                                        <form  id="form_{{$tarefa->id}}" action="{{route('tarefa.destroy', ['tarefa' => $tarefa->id])}}" method="POST">
+                                        <a href="{{ route('tarefa.show', ['tarefa' => $tarefa->id]) }}">Visualizar</a> |
+                                        <a href="{{ route('tarefa.edit', ['tarefa' => $tarefa->id]) }}">Editar</a> |
+                                        <form id="form_{{ $tarefa->id }}"
+                                            action="{{ route('tarefa.destroy', ['tarefa' => $tarefa->id]) }}"
+                                            method="POST">
                                             @csrf
                                             @method('DELETE')
 
-                                            <a href="#" onclick="document.querySelector('#form_{{$tarefa->id}}').submit()" >Excluir</a>
+                                            <a href="#"
+                                                onclick="document.querySelector('#form_{{ $tarefa->id }}').submit()">Excluir</a>
 
                                         </form>
                                     </td>
@@ -40,7 +46,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{$tarefas->links()}}
+                    {{ $tarefas->links() }}
                 </div>
             </div>
         </div>

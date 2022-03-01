@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     })->name('dashboard');
 
     Route::resource('/tarefa', TarefaController::class);
+    Route::get('/tarefa/exportar/{extensao}', [TarefaController::class, 'exportar'])->name('tarefa.exportar');
 });
 
 Route::get('/emails', function () {

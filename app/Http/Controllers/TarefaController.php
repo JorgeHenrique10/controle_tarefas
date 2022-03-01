@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TarefaExport;
 use App\Mail\NovaTarefaMail;
 use App\Models\Tarefa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TarefaController extends Controller
 {
@@ -121,6 +124,23 @@ class TarefaController extends Controller
      */
     public function destroy(Tarefa $tarefa)
     {
-        dd($tarefa);
+        $tarefa->delete();
+        return redirect()->route('tarefa.index');
+    }
+
+    public function exportar($extensao)
+    {
+        if (in_array($extensao, ['xlsx', 'csv'])) {
+            return Excel::download(new TarefaExport, 'lista_tarefas.' . $extensao);
+        } elseif ($extensao == 'pdf') {
+
+            $tarefas = Auth::user()->tarefas;
+            $pdf =  Pdf::loadView('tarefa.relatorio.tarefa', ['tarefas' => $tarefas]);
+            $pdf->setPaper('a4', 'landscape');
+
+            // return $pdf->download('tarefa.pdf');
+            return $pdf->stream('tarefa.pdf');
+        }
+        return redirect()->route('tarefa.index');
     }
 }
